@@ -58,7 +58,12 @@ namespace Wallet.BLL.Services
                 Status = t.Status.ToString(),
                 AuthUser = t.userId == t.userWhoPayedId ? "" : users.FirstOrDefault(u => u.Id == t.userId)?.Name
             }));
-            var CardBalance = transactions.Select(t => t.TotalSum).Sum();
+
+            DateTime firstDayOfCurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+            var transactionsForLastMonth = transactions.Where(t => t.TransactionDate >= firstDayOfCurrentMonth);
+
+            var CardBalance = transactionsForLastMonth.Select(t => t.TotalSum).Sum();
 
             var pointsToday = user.DailyPoints;
 
